@@ -21,6 +21,7 @@ class UserCrudResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
+            "role" => $this->role,
             'created_at' => (new Carbon($this->created_at))->format('Y-m-d H:i:s'),
         ];
     }

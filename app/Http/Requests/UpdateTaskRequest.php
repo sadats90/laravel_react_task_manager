@@ -29,6 +29,7 @@ class UpdateTaskRequest extends FormRequest
             'due_date' => ['nullable', 'date'],
             'project_id' => ['required', 'exists:projects,id'],
             'assigned_user_id' => ['required', 'exists:users,id'],
+            'parent_task_id' => ['nullable', 'exists:tasks,id'],
             'status' => [
                 'required',
                 Rule::in(['pending', 'in_progress', 'completed'])
@@ -36,7 +37,8 @@ class UpdateTaskRequest extends FormRequest
             'priority' => [
                 'required',
                 Rule::in(['low', 'medium', 'high'])
-            ]
+            ],
+            'progress' => ['nullable', 'integer', 'min:0', 'max:100']
         ];
     }
 }

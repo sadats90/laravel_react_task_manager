@@ -27,7 +27,9 @@ class StoreProjectRequest extends FormRequest
             'image' => ['nullable', 'image'],
             "description" => ['nullable', 'string'],
             'due_date' => ['nullable', 'date'],
-            'status' => ['required', Rule::in(['pending', 'in_progress', 'completed'])]
+            'status' => ['required', Rule::in(['pending', 'in_progress', 'completed'])],
+            'assigned_users' => ['nullable', 'array'],
+            'assigned_users.*' => ['exists:users,id']
         ];
     }
 }

@@ -11,7 +11,13 @@ export default function TasksTable({
   queryParams = null,
   hideProjectColumn = false,
 }) {
-  queryParams = queryParams || {};
+  // Ensure queryParams has default values
+  queryParams = queryParams || {
+    sort_field: 'created_at',
+    sort_direction: 'desc',
+    name: '',
+    status: ''
+  };
   const searchFieldChanged = (name, value) => {
     if (value) {
       queryParams[name] = value;
@@ -144,54 +150,73 @@ export default function TasksTable({
             </tr>
           </thead>
           <tbody>
-            {tasks.data.map((task) => (
-              <tr
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                key={task.id}
-              >
-                <td className="px-3 py-2">{task.id}</td>
-                <td className="px-3 py-2">
-                  <img src={task.image_path} style={{ width: 60 }} />
-                </td>
-                {!hideProjectColumn && (
-                  <td className="px-3 py-2">{task.project.name}</td>
-                )}
-                <th className="px-3 py-2 text-gray-100 hover:underline">
-                  <Link href={route("task.show", task.id)}>{task.name}</Link>
-                </th>
-                <td className="px-3 py-2">
-                  <span
-                    className={
-                      "px-2 py-1 rounded text-nowrap text-white " +
-                      TASK_STATUS_CLASS_MAP[task.status]
-                    }
-                  >
-                    {TASK_STATUS_TEXT_MAP[task.status]}
-                  </span>
-                </td>
-                <td className="px-3 py-2 text-nowrap">{task.created_at}</td>
-                <td className="px-3 py-2 text-nowrap">{task.due_date}</td>
-                <td className="px-3 py-2">{task.createdBy.name}</td>
-                <td className="px-3 py-2 text-nowrap">
-                  <Link
-                    href={route("task.edit", task.id)}
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={(e) => deleteTask(task)}
-                    className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                  >
-                    Delete
-                  </button>
+            {tasks && tasks.data && tasks.data.length > 0 ? (
+              tasks.data.map((task) => (
+                <tr
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  key={task.id}
+                >
+                  <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{task.id}</td>
+                  <td className="px-3 py-2">
+                    {task.image_path && (
+                      <img src={task.image_path} style={{ width: 60 }} />
+                    )}
+                  </td>
+                  {!hideProjectColumn && (
+                    <td className="px-3 py-2 text-gray-900 dark:text-gray-100">
+                      {(() => {
+                        console.log('Task project data:', task.project);
+                        return task.project ? task.project.name : 'No Project';
+                      })()}
+                    </td>
+                  )}
+                  <th className="px-3 py-2 text-gray-900 dark:text-gray-100 hover:underline">
+                    <Link href={route("task.show", task.id)} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">{task.name}</Link>
+                  </th>
+                  <td className="px-3 py-2">
+                    <span
+                      className={
+                        "px-2 py-1 rounded text-nowrap text-white " +
+                        TASK_STATUS_CLASS_MAP[task.status]
+                      }
+                    >
+                      {TASK_STATUS_TEXT_MAP[task.status]}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-nowrap text-gray-900 dark:text-gray-100">{task.created_at}</td>
+                  <td className="px-3 py-2 text-nowrap text-gray-900 dark:text-gray-100">{task.due_date}</td>
+                  <td className="px-3 py-2 text-gray-900 dark:text-gray-100">
+                    {task.createdBy ? task.createdBy.name : 'Unknown'}
+                  </td>
+                  <td className="px-3 py-2 text-nowrap">
+                    <Link
+                      href={route("task.edit", task.id)}
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={(e) => deleteTask(task)}
+                      className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="px-3 py-4 text-center text-gray-500">
+                  No tasks found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
-      <Pagination links={tasks.meta.links} />
+      {tasks && tasks.meta && tasks.meta.links && (
+        <Pagination links={tasks.meta.links} />
+      )}
     </>
   );
 }

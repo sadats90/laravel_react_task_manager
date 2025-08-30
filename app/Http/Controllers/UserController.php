@@ -6,6 +6,7 @@ use App\Http\Resources\UserCrudResource;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -14,6 +15,11 @@ class UserController extends Controller
      */
     public function index()
     {
+        // Only admins can access user management
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
         $query = User::query();
 
         $sortField = request("sort_field", 'created_at');
@@ -42,6 +48,11 @@ class UserController extends Controller
      */
     public function create()
     {
+        // Only admins can create users
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
         return inertia("User/Create");
     }
 
@@ -50,6 +61,11 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        // Only admins can create users
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
         $data = $request->validated();
         $data['email_verified_at'] = time();
         $data['password'] = bcrypt($data['password']);
@@ -64,7 +80,14 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        // Only admins can view user details
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
+        return inertia('User/Show', [
+            'user' => new UserCrudResource($user),
+        ]);
     }
 
     /**
@@ -72,6 +95,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // Only admins can edit users
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
         return inertia('User/Edit', [
             'user' => new UserCrudResource($user),
         ]);
@@ -82,13 +110,19 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        // Only admins can update users
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
         $data = $request->validated();
-        $password = $data['password'] ?? null;
-        if ($password) {
-            $data['password'] = bcrypt($password);
+        
+        if (isset($data['password']) && $data['password']) {
+            $data['password'] = bcrypt($data['password']);
         } else {
             unset($data['password']);
         }
+        
         $user->update($data);
 
         return to_route('user.index')
@@ -100,8 +134,20 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Only admins can delete users
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
+        // Prevent admin from deleting themselves
+        if ($user->id === Auth::id()) {
+            return to_route('user.index')
+                ->with('error', 'You cannot delete your own account.');
+        }
+
         $name = $user->name;
         $user->delete();
+
         return to_route('user.index')
             ->with('success', "User \"$name\" was deleted");
     }

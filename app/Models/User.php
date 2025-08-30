@@ -21,7 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'email_verified_at'
+        'email_verified_at',
+        'role'
     ];
 
     /**
@@ -45,5 +46,53 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is regular user
+     */
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
+
+    /**
+     * Get projects assigned to this user
+     */
+    public function assignedProjects()
+    {
+        return $this->belongsToMany(Project::class, 'project_user');
+    }
+
+    /**
+     * Get tasks assigned to this user
+     */
+    public function assignedTasks()
+    {
+        return $this->hasMany(Task::class, 'assigned_user_id');
+    }
+
+    /**
+     * Get projects created by this user
+     */
+    public function createdProjects()
+    {
+        return $this->hasMany(Project::class, 'created_by');
+    }
+
+    /**
+     * Get tasks created by this user
+     */
+    public function createdTasks()
+    {
+        return $this->hasMany(Task::class, 'created_by');
     }
 }

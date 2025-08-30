@@ -17,12 +17,19 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-
     public function createdBy(){
         return $this->belongsTo(User::class,'created_by');
     }
 
     public function updatedBy(){
         return $this->belongsTo(User::class,'updated_by');
+    }
+
+    /**
+     * Get users assigned to this project
+     */
+    public function assignedUsers()
+    {
+        return $this->belongsToMany(User::class, 'project_user');
     }
 }

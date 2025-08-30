@@ -1,0 +1,43 @@
+LARAVEL TASK MANAGER - UPLOAD CHECKLIST
+========================================
+
+FILES TO UPLOAD:
+✓ app/ (entire folder)
+✓ bootstrap/ (entire folder)
+✓ config/ (entire folder)
+✓ database/ (entire folder)
+✓ lang/ (entire folder)
+✓ public/ (entire folder)
+✓ resources/ (entire folder)
+✓ routes/ (entire folder)
+✓ storage/ (entire folder)
+✓ vendor/ (entire folder)
+✓ .env.production (rename to .env)
+✓ artisan
+✓ composer.json
+
+FILES TO EXCLUDE:
+✗ node_modules/
+✗ tests/
+✗ .git/
+✗ .vscode/
+✗ storage/logs/ (will be recreated)
+✗ storage/framework/cache/ (will be recreated)
+✗ storage/framework/sessions/ (will be recreated)
+✗ storage/framework/views/ (will be recreated)
+
+POST-UPLOAD STEPS:
+1. Rename .env.production to .env
+2. Update database credentials in .env
+3. Set file permissions (755 for folders, 644 for files)
+4. Run: php artisan key:generate --force
+5. Run: php artisan migrate --force
+6. Run: php artisan config:cache
+7. Run: php artisan route:cache
+8. Run: php artisan view:cache
+9. Run: php artisan storage:link
+
+PERMISSIONS:
+- storage/ → 755
+- bootstrap/cache/ → 755
+- .env → 644

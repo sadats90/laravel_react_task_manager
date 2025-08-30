@@ -77,32 +77,44 @@ export default function Dashboard({
                   </tr>
                 </thead>
                 <tbody>
-                  {activeTasks.data.map((task) => (
-                    <tr key={task.id}>
-                      <td className="px-3 py-2">{task.id}</td>
-                      <td className="px-3 py-2 text-white hover:underline">
-                        <Link href={route("project.show", task.project.id)}>
-                          {task.project.name}
-                        </Link>
+                  {activeTasks && activeTasks.data && activeTasks.data.length > 0 ? (
+                    activeTasks.data.map((task) => (
+                      <tr key={task.id}>
+                        <td className="px-3 py-2">{task.id}</td>
+                        <td className="px-3 py-2 text-white hover:underline">
+                          {task.project ? (
+                            <Link href={route("project.show", task.project.id)}>
+                              {task.project.name}
+                            </Link>
+                          ) : (
+                            <span className="text-gray-400">No Project</span>
+                          )}
+                        </td>
+                        <td className="px-3 py-2 text-white hover:underline">
+                          <Link href={route("task.show", task.id)}>
+                            {task.name}
+                          </Link>
+                        </td>
+                        <td className="px-3 py-2">
+                          <span
+                            className={
+                              "px-2 py-1 rounded text-nowrap text-white " +
+                              TASK_STATUS_CLASS_MAP[task.status]
+                            }
+                          >
+                            {TASK_STATUS_TEXT_MAP[task.status]}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2 text-nowrap">{task.due_date}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="px-3 py-4 text-center text-gray-500">
+                        No active tasks found.
                       </td>
-                      <td className="px-3 py-2 text-white hover:underline">
-                        <Link href={route("task.show", task.id)}>
-                          {task.name}
-                        </Link>
-                      </td>
-                      <td className="px-3 py-2">
-                        <span
-                          className={
-                            "px-2 py-1 rounded text-nowrap text-white " +
-                            TASK_STATUS_CLASS_MAP[task.status]
-                          }
-                        >
-                          {TASK_STATUS_TEXT_MAP[task.status]}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2 text-nowrap">{task.due_date}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

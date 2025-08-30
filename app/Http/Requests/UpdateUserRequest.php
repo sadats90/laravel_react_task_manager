@@ -36,6 +36,7 @@ class UpdateUserRequest extends FormRequest
                 'confirmed',
                 Password::min(8)->letters()->symbols(),
             ],
+            "role" => ["required", Rule::in(['admin', 'user'])],
         ];
     }
 }
