@@ -41,3 +41,5 @@ PERMISSIONS:
 - storage/ → 755
 - bootstrap/cache/ → 755
 - .env → 644
+
+

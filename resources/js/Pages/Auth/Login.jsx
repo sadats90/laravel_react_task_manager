@@ -92,6 +92,18 @@ export default function Login({ status, canResetPassword }) {
                     </PrimaryButton>
                 </div>
             </form>
+
+            <div className="mt-8 text-center border-t pt-6">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    Don't have an account?
+                </p>
+                <Link
+                    href={route('register')}
+                    className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
+                >
+                    Create Account
+                </Link>
+            </div>
         </GuestLayout>
     );
 }
